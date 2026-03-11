@@ -45,7 +45,7 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
             {i < steps.length - 1 && (
               <div
                 className={`w-12 h-px ${
-                  currentStep > stepNum ? "bg-primary" : "bg-border"
+                  currentStep > stepNum ? "bg-success" : "bg-border"
                 }`}
               />
             )}

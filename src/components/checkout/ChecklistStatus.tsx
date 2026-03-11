@@ -30,7 +30,7 @@ const ChecklistStatus = ({ steps }: ChecklistStatusProps) => {
             <span
               className={`font-mono text-sm ${
                 step.status === "complete"
-                  ? "text-primary"
+                  ? "text-success"
                   : step.status === "incomplete"
                   ? "text-attention"
                   : "text-disabled-foreground"

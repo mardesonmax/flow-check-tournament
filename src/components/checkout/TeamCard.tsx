@@ -100,7 +100,7 @@ const TeamCard = ({
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-sm text-foreground">Jogador {i + 1}</span>
                     {player.filled ? (
-                      <Check className="w-3.5 h-3.5 text-primary" />
+                      <Check className="w-3.5 h-3.5 text-success" />
                     ) : (
                       <AlertTriangle className="w-3.5 h-3.5 text-attention" />
                     )}

@@ -34,7 +34,7 @@ const StepProfile = ({ profileComplete, onComplete, onContinue }: StepProfilePro
     return (
       <div className="border border-border rounded-lg bg-card p-6">
         <div className="flex items-center gap-3 mb-4">
-          <CheckCircle className="w-5 h-5 text-primary" />
+          <CheckCircle className="w-5 h-5 text-success" />
           <h2 className="font-mono text-lg font-semibold text-foreground">Perfil completo</h2>
         </div>
         <p className="text-sm text-muted-foreground mb-6">
