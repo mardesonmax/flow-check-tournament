@@ -32,7 +32,7 @@ const initialCategories: CategoryData[] = [
     price: "R$ 150,00",
     players: [
       { name: "THZ 777", filled: true, status: "filled" },
-      { name: "", filled: false, status: "empty" },
+      { name: "Lucas Silva", filled: true, status: "filled" },
     ],
     useMyData: true,
   },
@@ -43,7 +43,7 @@ const initialCategories: CategoryData[] = [
     price: "R$ 150,00",
     players: [
       { name: "THZ 777", filled: true, status: "filled" },
-      { name: "", filled: false, status: "empty" },
+      { name: "", filled: false, status: "invited" },
     ],
     useMyData: true,
   },
