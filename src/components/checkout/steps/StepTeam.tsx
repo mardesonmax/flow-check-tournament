@@ -20,7 +20,7 @@ interface CategoryData {
 interface StepTeamProps {
   categories: CategoryData[];
   onToggleMyData: (catIndex: number) => void;
-  onEditPlayer: (catIndex: number, playerIndex: number) => void;
+  onEditPlayer: (catIndex: number, playerIndex: number, name: string) => void;
   onSelectPlayer: (catIndex: number, playerIndex: number, name: string) => void;
   onInvitePlayer: (catIndex: number, playerIndex: number) => void;
   onBack: () => void;
