@@ -64,7 +64,7 @@ const StepTeam = ({
           players={cat.players}
           useMyData={cat.useMyData}
           onToggleMyData={() => onToggleMyData(catIndex)}
-          onEditPlayer={(playerIndex) => onEditPlayer(catIndex, playerIndex)}
+          onEditPlayer={(playerIndex, name) => onEditPlayer(catIndex, playerIndex, name)}
           onSelectPlayer={(playerIndex, name) => onSelectPlayer(catIndex, playerIndex, name)}
           onInvitePlayer={(playerIndex) => onInvitePlayer(catIndex, playerIndex)}
           filledPlayers={uniqueFilledPlayers}
