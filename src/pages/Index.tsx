@@ -22,7 +22,6 @@ interface CategoryData {
   price: string;
   players: Player[];
   useMyData: boolean;
-  isReused: boolean;
 }
 
 const initialCategories: CategoryData[] = [
@@ -36,7 +35,6 @@ const initialCategories: CategoryData[] = [
       { name: "", filled: false, status: "empty" },
     ],
     useMyData: true,
-    isReused: false,
   },
   {
     categoryNumber: 2,
@@ -48,7 +46,6 @@ const initialCategories: CategoryData[] = [
       { name: "", filled: false, status: "empty" },
     ],
     useMyData: true,
-    isReused: false,
   },
   {
     categoryNumber: 3,
@@ -60,7 +57,6 @@ const initialCategories: CategoryData[] = [
       { name: "", filled: false, status: "empty" },
     ],
     useMyData: true,
-    isReused: false,
   },
 ];
 
@@ -132,47 +128,25 @@ const Index = () => {
     );
   };
 
-  const handleReuseDupla = (catIndex: number) => {
-    const source = categories[0];
-    setCategories((prev) =>
-      prev.map((cat, ci) =>
-        ci === catIndex
-          ? {
-              ...cat,
-              isReused: true,
-              players: source.players.map((p) => ({
-                ...p,
-                status: "reused" as PlayerStatus,
-              })),
-            }
-          : cat
-      )
-    );
-  };
-
   const totalCategories = categories.length;
 
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-4 py-6">
-        {/* Back */}
         <button className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6">
           <ArrowLeft className="w-4 h-4" />
           <span className="font-mono text-sm">Voltar</span>
         </button>
 
-        {/* Title */}
         <h1 className="font-mono text-2xl font-bold text-foreground mb-1">Finalizar Inscrição</h1>
         <p className="text-sm text-muted-foreground mb-6">
           {totalCategories} {totalCategories === 1 ? "categoria" : "categorias"} no carrinho
         </p>
 
-        {/* Stepper */}
         <div className="mb-8">
           <StepIndicator currentStep={currentStep} steps={STEPS} />
         </div>
 
-        {/* Step content */}
         {currentStep === 1 && (
           <StepProfile
             profileComplete={profileComplete}
@@ -188,7 +162,6 @@ const Index = () => {
             onEditPlayer={handleEditPlayer}
             onSelectPlayer={handleSelectPlayer}
             onInvitePlayer={handleInvitePlayer}
-            onReuseDupla={handleReuseDupla}
             onBack={() => setCurrentStep(1)}
             onContinue={() => setCurrentStep(3)}
           />

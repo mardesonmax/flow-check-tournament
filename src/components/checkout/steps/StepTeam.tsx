@@ -15,7 +15,6 @@ interface CategoryData {
   price: string;
   players: Player[];
   useMyData: boolean;
-  isReused: boolean;
 }
 
 interface StepTeamProps {
@@ -24,7 +23,6 @@ interface StepTeamProps {
   onEditPlayer: (catIndex: number, playerIndex: number) => void;
   onSelectPlayer: (catIndex: number, playerIndex: number, name: string) => void;
   onInvitePlayer: (catIndex: number, playerIndex: number) => void;
-  onReuseDupla: (catIndex: number) => void;
   onBack: () => void;
   onContinue: () => void;
 }
@@ -35,12 +33,23 @@ const StepTeam = ({
   onEditPlayer,
   onSelectPlayer,
   onInvitePlayer,
-  onReuseDupla,
   onBack,
   onContinue,
 }: StepTeamProps) => {
   const allReady = categories.every((cat) =>
     cat.players.every((p) => p.status === "filled" || p.status === "invited" || p.status === "reused")
+  );
+
+  // Collect all filled players across categories with their source
+  const filledPlayers = categories.flatMap((cat) =>
+    cat.players
+      .filter((p) => p.filled && p.name)
+      .map((p) => ({ name: p.name, source: cat.categoryName }))
+  );
+
+  // Deduplicate by name, keep first source
+  const uniqueFilledPlayers = filledPlayers.filter(
+    (p, i, arr) => arr.findIndex((x) => x.name === p.name) === i
   );
 
   return (
@@ -58,9 +67,7 @@ const StepTeam = ({
           onEditPlayer={(playerIndex) => onEditPlayer(catIndex, playerIndex)}
           onSelectPlayer={(playerIndex, name) => onSelectPlayer(catIndex, playerIndex, name)}
           onInvitePlayer={(playerIndex) => onInvitePlayer(catIndex, playerIndex)}
-          canReuseDupla={catIndex > 0 && !cat.isReused}
-          isReused={cat.isReused}
-          onReuseDupla={() => onReuseDupla(catIndex)}
+          filledPlayers={uniqueFilledPlayers}
         />
       ))}
 
