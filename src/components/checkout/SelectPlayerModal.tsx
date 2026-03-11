@@ -1,4 +1,4 @@
-import { User, Check } from "lucide-react";
+import { User } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -7,38 +7,44 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-interface MockPlayer {
+interface FilledPlayer {
   name: string;
-  id: string;
+  source: string;
 }
-
-const MOCK_PLAYERS: MockPlayer[] = [
-  { name: "Player2", id: "1" },
-  { name: "Lucas Silva", id: "2" },
-  { name: "Pedro Santos", id: "3" },
-];
 
 interface SelectPlayerModalProps {
   open: boolean;
   onClose: () => void;
   onSelect: (name: string) => void;
+  filledPlayers?: FilledPlayer[];
 }
 
-const SelectPlayerModal = ({ open, onClose, onSelect }: SelectPlayerModalProps) => {
+const MOCK_PLAYERS: FilledPlayer[] = [
+  { name: "Lucas Silva", source: "Usado recentemente" },
+  { name: "Pedro Santos", source: "Usado recentemente" },
+];
+
+const SelectPlayerModal = ({ open, onClose, onSelect, filledPlayers = [] }: SelectPlayerModalProps) => {
+  // Merge filled players from categories + mock recent players, deduplicate by name
+  const allPlayers = [...filledPlayers, ...MOCK_PLAYERS];
+  const unique = allPlayers.filter(
+    (p, i, arr) => arr.findIndex((x) => x.name === p.name) === i
+  );
+
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="sm:max-w-md bg-card border-border">
         <DialogHeader>
           <DialogTitle className="font-mono text-foreground">Selecionar jogador</DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Jogadores usados recentemente
+            Jogadores disponíveis
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-2 pt-2">
-          {MOCK_PLAYERS.map((player) => (
+          {unique.map((player, i) => (
             <button
-              key={player.id}
+              key={`${player.name}-${i}`}
               onClick={() => {
                 onSelect(player.name);
                 onClose();
@@ -48,7 +54,10 @@ const SelectPlayerModal = ({ open, onClose, onSelect }: SelectPlayerModalProps) 
               <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
                 <User className="w-4 h-4 text-muted-foreground" />
               </div>
-              <span className="font-mono text-sm text-foreground">{player.name}</span>
+              <div>
+                <span className="font-mono text-sm text-foreground">{player.name}</span>
+                <p className="text-[10px] text-muted-foreground">{player.source}</p>
+              </div>
             </button>
           ))}
         </div>

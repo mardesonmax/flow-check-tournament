@@ -1,4 +1,4 @@
-import { Check, AlertTriangle, ChevronDown, ChevronUp, User, Pencil, UserPlus, Link2, Users, RefreshCw } from "lucide-react";
+import { AlertTriangle, ChevronDown, ChevronUp, User, Pencil, UserPlus, Link2, Users } from "lucide-react";
 import { useState } from "react";
 import InvitePlayerPanel from "@/components/checkout/InvitePlayerPanel";
 import SelectPlayerModal from "@/components/checkout/SelectPlayerModal";
@@ -8,6 +8,11 @@ interface Player {
   name: string;
   filled: boolean;
   status: PlayerStatus;
+}
+
+interface FilledPlayer {
+  name: string;
+  source: string;
 }
 
 interface TeamCardProps {
@@ -21,9 +26,7 @@ interface TeamCardProps {
   onEditPlayer: (index: number) => void;
   onSelectPlayer: (index: number, name: string) => void;
   onInvitePlayer: (index: number) => void;
-  canReuseDupla?: boolean;
-  isReused?: boolean;
-  onReuseDupla?: () => void;
+  filledPlayers?: FilledPlayer[];
 }
 
 const TeamCard = ({
@@ -37,9 +40,7 @@ const TeamCard = ({
   onEditPlayer,
   onSelectPlayer,
   onInvitePlayer,
-  canReuseDupla,
-  isReused,
-  onReuseDupla,
+  filledPlayers = [],
 }: TeamCardProps) => {
   const [expanded, setExpanded] = useState(true);
   const [showInviteFor, setShowInviteFor] = useState<number | null>(null);
@@ -48,11 +49,7 @@ const TeamCard = ({
 
   const allFilled = players.every((p) => p.status === "filled" || p.status === "invited" || p.status === "reused");
 
-  const headerStatus = isReused
-    ? "reused"
-    : allFilled
-      ? "filled"
-      : "empty";
+  const headerStatus = allFilled ? "filled" : "empty";
 
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
@@ -84,24 +81,6 @@ const TeamCard = ({
       {/* Expanded content */}
       {expanded && (
         <div className="px-4 pb-4 space-y-3">
-          {/* Reuse dupla option */}
-          {canReuseDupla && !isReused && (
-            <button
-              onClick={onReuseDupla}
-              className="w-full flex items-center justify-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 font-mono text-sm py-3 rounded-lg transition-colors"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Usar mesma dupla da Categoria A
-            </button>
-          )}
-
-          {isReused && (
-            <div className="flex items-center gap-2 bg-primary/10 border border-primary/30 rounded-lg p-3">
-              <RefreshCw className="w-4 h-4 text-primary" />
-              <span className="font-mono text-xs text-primary">Dupla reutilizada da Categoria A</span>
-            </div>
-          )}
-
           {/* Use my data toggle */}
           <div className="flex items-center justify-between bg-secondary rounded-lg p-3">
             <div>
@@ -218,6 +197,7 @@ const TeamCard = ({
         open={showSelectModal}
         onClose={() => setShowSelectModal(false)}
         onSelect={(name) => onSelectPlayer(selectingForIndex, name)}
+        filledPlayers={filledPlayers}
       />
     </div>
   );
