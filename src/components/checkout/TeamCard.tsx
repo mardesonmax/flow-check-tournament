@@ -51,7 +51,7 @@ const TeamCard = ({
           <span
             className={`font-mono text-xs px-3 py-1 rounded-full ${
               allFilled
-                ? "bg-primary/20 text-primary"
+                ? "bg-success/20 text-success"
                 : "bg-attention/20 text-attention"
             }`}
           >
@@ -100,7 +100,7 @@ const TeamCard = ({
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-sm text-foreground">Jogador {i + 1}</span>
                     {player.filled ? (
-                      <Check className="w-3.5 h-3.5 text-primary" />
+                      <Check className="w-3.5 h-3.5 text-success" />
                     ) : (
                       <AlertTriangle className="w-3.5 h-3.5 text-attention" />
                     )}

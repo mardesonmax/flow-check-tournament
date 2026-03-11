@@ -19,7 +19,7 @@ const ChecklistStatus = ({ steps }: ChecklistStatusProps) => {
         {steps.map((step, i) => (
           <div key={i} className="flex items-center gap-3">
             {step.status === "complete" && (
-              <Check className="w-4 h-4 text-primary shrink-0" />
+              <Check className="w-4 h-4 text-success shrink-0" />
             )}
             {step.status === "incomplete" && (
               <AlertTriangle className="w-4 h-4 text-attention shrink-0" />
@@ -30,7 +30,7 @@ const ChecklistStatus = ({ steps }: ChecklistStatusProps) => {
             <span
               className={`font-mono text-sm ${
                 step.status === "complete"
-                  ? "text-primary"
+                  ? "text-success"
                   : step.status === "incomplete"
                   ? "text-attention"
                   : "text-disabled-foreground"
