@@ -31,7 +31,7 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
               <span
                 className={`font-mono text-sm hidden sm:inline ${
                   isComplete
-                    ? "text-primary"
+                    ? "text-success"
                     : isCurrent
                     ? "text-foreground font-semibold"
                     : "text-muted-foreground"
