@@ -1,9 +1,13 @@
-import { Check, AlertTriangle, ChevronDown, ChevronUp, User, Pencil, Mail } from "lucide-react";
+import { Check, AlertTriangle, ChevronDown, ChevronUp, User, Pencil, UserPlus, Link2, Users, RefreshCw } from "lucide-react";
 import { useState } from "react";
+import InvitePlayerPanel from "@/components/checkout/InvitePlayerPanel";
+import SelectPlayerModal from "@/components/checkout/SelectPlayerModal";
+import PlayerStatusBadge, { type PlayerStatus } from "@/components/checkout/PlayerStatusBadge";
 
 interface Player {
   name: string;
   filled: boolean;
+  status: PlayerStatus;
 }
 
 interface TeamCardProps {
@@ -15,6 +19,11 @@ interface TeamCardProps {
   useMyData: boolean;
   onToggleMyData: () => void;
   onEditPlayer: (index: number) => void;
+  onSelectPlayer: (index: number, name: string) => void;
+  onInvitePlayer: (index: number) => void;
+  canReuseDupla?: boolean;
+  isReused?: boolean;
+  onReuseDupla?: () => void;
 }
 
 const TeamCard = ({
@@ -26,9 +35,24 @@ const TeamCard = ({
   useMyData,
   onToggleMyData,
   onEditPlayer,
+  onSelectPlayer,
+  onInvitePlayer,
+  canReuseDupla,
+  isReused,
+  onReuseDupla,
 }: TeamCardProps) => {
   const [expanded, setExpanded] = useState(true);
-  const allFilled = players.every((p) => p.filled);
+  const [showInviteFor, setShowInviteFor] = useState<number | null>(null);
+  const [showSelectModal, setShowSelectModal] = useState(false);
+  const [selectingForIndex, setSelectingForIndex] = useState<number>(1);
+
+  const allFilled = players.every((p) => p.status === "filled" || p.status === "invited" || p.status === "reused");
+
+  const headerStatus = isReused
+    ? "reused"
+    : allFilled
+      ? "filled"
+      : "empty";
 
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
@@ -48,15 +72,7 @@ const TeamCard = ({
         </div>
         <div className="flex items-center gap-3">
           <span className="font-mono text-sm font-semibold text-foreground">{price}</span>
-          <span
-            className={`font-mono text-xs px-3 py-1 rounded-full ${
-              allFilled
-                ? "bg-success/20 text-success"
-                : "bg-attention/20 text-attention"
-            }`}
-          >
-            {allFilled ? "Completo" : "Pendente"}
-          </span>
+          <PlayerStatusBadge status={headerStatus} />
           {expanded ? (
             <ChevronUp className="w-4 h-4 text-muted-foreground" />
           ) : (
@@ -68,6 +84,24 @@ const TeamCard = ({
       {/* Expanded content */}
       {expanded && (
         <div className="px-4 pb-4 space-y-3">
+          {/* Reuse dupla option */}
+          {canReuseDupla && !isReused && (
+            <button
+              onClick={onReuseDupla}
+              className="w-full flex items-center justify-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 font-mono text-sm py-3 rounded-lg transition-colors"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Usar mesma dupla da Categoria A
+            </button>
+          )}
+
+          {isReused && (
+            <div className="flex items-center gap-2 bg-primary/10 border border-primary/30 rounded-lg p-3">
+              <RefreshCw className="w-4 h-4 text-primary" />
+              <span className="font-mono text-xs text-primary">Dupla reutilizada da Categoria A</span>
+            </div>
+          )}
+
           {/* Use my data toggle */}
           <div className="flex items-center justify-between bg-secondary rounded-lg p-3">
             <div>
@@ -90,39 +124,81 @@ const TeamCard = ({
 
           {/* Players */}
           {players.map((player, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-between border border-border rounded-lg p-3"
-            >
-              <div className="flex items-center gap-3">
-                <User className="w-4 h-4 text-muted-foreground" />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-sm text-foreground">Jogador {i + 1}</span>
-                    {player.filled ? (
-                      <Check className="w-3.5 h-3.5 text-success" />
-                    ) : (
-                      <AlertTriangle className="w-3.5 h-3.5 text-attention" />
-                    )}
+            <div key={i} className="border border-border rounded-lg overflow-hidden">
+              <div className="flex items-center justify-between p-3">
+                <div className="flex items-center gap-3">
+                  <User className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-sm text-foreground">Jogador {i + 1}</span>
+                      <PlayerStatusBadge status={player.status} />
+                    </div>
+                    <p className={`text-xs ${player.filled ? "text-foreground" : "text-muted-foreground"}`}>
+                      {player.status === "invited"
+                        ? "Convite enviado — aguardando confirmação"
+                        : player.filled
+                          ? player.name
+                          : i === 0
+                            ? "Clique em editar para preencher os dados"
+                            : ""}
+                    </p>
                   </div>
-                  <p className={`text-xs ${player.filled ? "text-foreground" : "text-muted-foreground"}`}>
-                    {player.filled ? player.name : "Clique em editar para preencher os dados"}
-                  </p>
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                {!player.filled && i === 1 && (
-                  <span className="font-mono text-[10px] bg-secondary text-muted-foreground px-2 py-1 rounded flex items-center gap-1">
-                    <Mail className="w-3 h-3" /> Convite será enviado
-                  </span>
+                {player.filled && (
+                  <button
+                    onClick={() => onEditPlayer(i)}
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
                 )}
-                <button
-                  onClick={() => onEditPlayer(i)}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <Pencil className="w-4 h-4" />
-                </button>
               </div>
+
+              {/* Empty state for Jogador 2+ with action options */}
+              {!player.filled && player.status === "empty" && i > 0 && showInviteFor !== i && (
+                <div className="px-3 pb-3 space-y-2">
+                  <p className="font-mono text-xs text-muted-foreground mb-2">Adicionar parceiro</p>
+                  <div className="grid grid-cols-1 gap-2">
+                    <button
+                      onClick={() => onEditPlayer(i)}
+                      className="flex items-center gap-2 bg-secondary hover:bg-accent text-foreground font-mono text-xs py-2.5 px-3 rounded-lg transition-colors"
+                    >
+                      <UserPlus className="w-3.5 h-3.5" />
+                      Preencher dados manualmente
+                    </button>
+                    <button
+                      onClick={() => setShowInviteFor(i)}
+                      className="flex items-center gap-2 bg-secondary hover:bg-accent text-foreground font-mono text-xs py-2.5 px-3 rounded-lg transition-colors"
+                    >
+                      <Link2 className="w-3.5 h-3.5" />
+                      Convidar parceiro por link
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectingForIndex(i);
+                        setShowSelectModal(true);
+                      }}
+                      className="flex items-center gap-2 bg-secondary hover:bg-accent text-foreground font-mono text-xs py-2.5 px-3 rounded-lg transition-colors"
+                    >
+                      <Users className="w-3.5 h-3.5" />
+                      Selecionar jogador existente
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Invite panel */}
+              {showInviteFor === i && (
+                <div className="px-3 pb-3">
+                  <InvitePlayerPanel
+                    onInviteSent={() => {
+                      setShowInviteFor(null);
+                      onInvitePlayer(i);
+                    }}
+                    onBack={() => setShowInviteFor(null)}
+                  />
+                </div>
+              )}
             </div>
           ))}
 
@@ -137,6 +213,12 @@ const TeamCard = ({
           )}
         </div>
       )}
+
+      <SelectPlayerModal
+        open={showSelectModal}
+        onClose={() => setShowSelectModal(false)}
+        onSelect={(name) => onSelectPlayer(selectingForIndex, name)}
+      />
     </div>
   );
 };
