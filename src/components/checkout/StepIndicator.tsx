@@ -22,7 +22,7 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                   isComplete
                     ? "bg-success text-success-foreground"
                     : isCurrent
-                    ? "border-2 border-primary text-primary"
+                    ? "bg-primary text-primary-foreground"
                     : "border border-border text-muted-foreground"
                 }`}
               >
