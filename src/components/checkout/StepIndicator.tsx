@@ -20,9 +20,9 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-mono font-bold transition-colors ${
                   isComplete
-                    ? "bg-success text-success-foreground"
-                    : isCurrent
                     ? "bg-primary text-primary-foreground"
+                    : isCurrent
+                    ? "border-2 border-primary text-primary"
                     : "border border-border text-muted-foreground"
                 }`}
               >
