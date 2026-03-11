@@ -39,7 +39,7 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
 
             {/* Connector line */}
             {i < steps.length - 1 && (
-              <div className={`w-12 h-px ${currentStep > stepNum ? "bg-success" : "bg-border"}`} />
+              <div className={`w-12 h-px ${currentStep > stepNum ? "bg-primary" : "bg-border"}`} />
             )}
           </div>
         );
