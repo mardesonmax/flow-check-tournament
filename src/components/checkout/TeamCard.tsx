@@ -51,7 +51,7 @@ const TeamCard = ({
           <span
             className={`font-mono text-xs px-3 py-1 rounded-full ${
               allFilled
-                ? "bg-primary/20 text-primary"
+                ? "bg-success/20 text-success"
                 : "bg-attention/20 text-attention"
             }`}
           >
