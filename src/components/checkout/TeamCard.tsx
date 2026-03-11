@@ -2,6 +2,7 @@ import { AlertTriangle, ChevronDown, ChevronUp, User, Pencil, UserPlus, Link2, U
 import { useState } from "react";
 import InvitePlayerPanel from "@/components/checkout/InvitePlayerPanel";
 import SelectPlayerModal from "@/components/checkout/SelectPlayerModal";
+import ManualPlayerModal from "@/components/checkout/ManualPlayerModal";
 import PlayerStatusBadge, { type PlayerStatus } from "@/components/checkout/PlayerStatusBadge";
 
 interface Player {
@@ -23,7 +24,7 @@ interface TeamCardProps {
   players: Player[];
   useMyData: boolean;
   onToggleMyData: () => void;
-  onEditPlayer: (index: number) => void;
+  onEditPlayer: (index: number, name: string) => void;
   onSelectPlayer: (index: number, name: string) => void;
   onInvitePlayer: (index: number) => void;
   filledPlayers?: FilledPlayer[];
@@ -45,11 +46,21 @@ const TeamCard = ({
   const [expanded, setExpanded] = useState(true);
   const [showInviteFor, setShowInviteFor] = useState<number | null>(null);
   const [showSelectModal, setShowSelectModal] = useState(false);
-  const [selectingForIndex, setSelectingForIndex] = useState<number>(1);
+  const [showManualModal, setShowManualModal] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number>(1);
 
   const allFilled = players.every((p) => p.status === "filled" || p.status === "invited" || p.status === "reused");
-
   const headerStatus = allFilled ? "filled" : "empty";
+
+  const openManualModal = (index: number) => {
+    setEditingIndex(index);
+    setShowManualModal(true);
+  };
+
+  const openSelectModal = (index: number) => {
+    setEditingIndex(index);
+    setShowSelectModal(true);
+  };
 
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
@@ -125,7 +136,7 @@ const TeamCard = ({
                 </div>
                 {player.filled && (
                   <button
-                    onClick={() => onEditPlayer(i)}
+                    onClick={() => openManualModal(i)}
                     className="text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <Pencil className="w-4 h-4" />
@@ -139,7 +150,7 @@ const TeamCard = ({
                   <p className="font-mono text-xs text-muted-foreground mb-2">Adicionar parceiro</p>
                   <div className="grid grid-cols-1 gap-2">
                     <button
-                      onClick={() => onEditPlayer(i)}
+                      onClick={() => openManualModal(i)}
                       className="flex items-center gap-2 bg-secondary hover:bg-accent text-foreground font-mono text-xs py-2.5 px-3 rounded-lg transition-colors"
                     >
                       <UserPlus className="w-3.5 h-3.5" />
@@ -153,10 +164,7 @@ const TeamCard = ({
                       Convidar parceiro por link
                     </button>
                     <button
-                      onClick={() => {
-                        setSelectingForIndex(i);
-                        setShowSelectModal(true);
-                      }}
+                      onClick={() => openSelectModal(i)}
                       className="flex items-center gap-2 bg-secondary hover:bg-accent text-foreground font-mono text-xs py-2.5 px-3 rounded-lg transition-colors"
                     >
                       <Users className="w-3.5 h-3.5" />
@@ -196,8 +204,15 @@ const TeamCard = ({
       <SelectPlayerModal
         open={showSelectModal}
         onClose={() => setShowSelectModal(false)}
-        onSelect={(name) => onSelectPlayer(selectingForIndex, name)}
+        onSelect={(name) => onSelectPlayer(editingIndex, name)}
         filledPlayers={filledPlayers}
+      />
+
+      <ManualPlayerModal
+        open={showManualModal}
+        onClose={() => setShowManualModal(false)}
+        onSave={(name) => onEditPlayer(editingIndex, name)}
+        playerLabel={`Jogador ${editingIndex + 1}`}
       />
     </div>
   );

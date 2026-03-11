@@ -71,7 +71,7 @@ const Index = () => {
     setCurrentStep(2);
   };
 
-  const handleEditPlayer = (catIndex: number, playerIndex: number) => {
+  const handleEditPlayer = (catIndex: number, playerIndex: number, name: string) => {
     setCategories((prev) =>
       prev.map((cat, ci) =>
         ci === catIndex
@@ -79,7 +79,7 @@ const Index = () => {
               ...cat,
               players: cat.players.map((p, pi) =>
                 pi === playerIndex
-                  ? { name: pi === 0 ? "THZ 777" : "Jogador Manual", filled: true, status: "filled" as PlayerStatus }
+                  ? { name, filled: true, status: "filled" as PlayerStatus }
                   : p
               ),
             }

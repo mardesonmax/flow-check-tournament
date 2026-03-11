@@ -20,7 +20,7 @@ interface CategoryData {
 interface StepTeamProps {
   categories: CategoryData[];
   onToggleMyData: (catIndex: number) => void;
-  onEditPlayer: (catIndex: number, playerIndex: number) => void;
+  onEditPlayer: (catIndex: number, playerIndex: number, name: string) => void;
   onSelectPlayer: (catIndex: number, playerIndex: number, name: string) => void;
   onInvitePlayer: (catIndex: number, playerIndex: number) => void;
   onBack: () => void;
@@ -64,7 +64,7 @@ const StepTeam = ({
           players={cat.players}
           useMyData={cat.useMyData}
           onToggleMyData={() => onToggleMyData(catIndex)}
-          onEditPlayer={(playerIndex) => onEditPlayer(catIndex, playerIndex)}
+          onEditPlayer={(playerIndex, name) => onEditPlayer(catIndex, playerIndex, name)}
           onSelectPlayer={(playerIndex, name) => onSelectPlayer(catIndex, playerIndex, name)}
           onInvitePlayer={(playerIndex) => onInvitePlayer(catIndex, playerIndex)}
           filledPlayers={uniqueFilledPlayers}
