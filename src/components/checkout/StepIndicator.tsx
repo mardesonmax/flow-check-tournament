@@ -20,21 +20,17 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-mono font-bold transition-colors ${
                   isComplete
-                    ? "bg-primary text-primary-foreground"
+                    ? "bg-primary text-success"
                     : isCurrent
-                    ? "border-2 border-primary text-primary"
-                    : "border border-border text-muted-foreground"
+                      ? "border-2 border-primary text-primary"
+                      : "border border-border text-muted-foreground"
                 }`}
               >
                 {isComplete ? <Check className="w-4 h-4" /> : stepNum}
               </div>
               <span
                 className={`font-mono text-sm hidden sm:inline ${
-                  isComplete
-                    ? "text-success"
-                    : isCurrent
-                    ? "text-foreground font-semibold"
-                    : "text-muted-foreground"
+                  isComplete ? "text-success" : isCurrent ? "text-foreground font-semibold" : "text-muted-foreground"
                 }`}
               >
                 {label}
@@ -43,11 +39,7 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
 
             {/* Connector line */}
             {i < steps.length - 1 && (
-              <div
-                className={`w-12 h-px ${
-                  currentStep > stepNum ? "bg-success" : "bg-border"
-                }`}
-              />
+              <div className={`w-12 h-px ${currentStep > stepNum ? "bg-success" : "bg-border"}`} />
             )}
           </div>
         );
